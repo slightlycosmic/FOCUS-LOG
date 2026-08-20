@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Focus Log</title>
+<style>
+:root{
+  --bg:#f6f3ee; --panel:#fffdf9; --text:#292724; --muted:#8b857c;
+  --accent:#b86f58; --accent-soft:#ead8d1; --border:#e3ddd4;
+  --radius:16px; --shadow:0 8px 30px rgba(40,35,30,.06);
+  --font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font)}
+button,input{font:inherit} button{cursor:pointer}
+.app{max-width:900px;margin:auto;padding:20px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;margin-bottom:12px}
+h1,h2,h3,p{margin:0} h1{font-size:19px;letter-spacing:.02em}.date{font-size:12px;color:var(--muted);margin-top:3px}
+.iconbtn,.tab,.primary,.danger,.ghost{border:0;border-radius:10px;padding:9px 12px}
+.iconbtn,.ghost{background:transparent;color:var(--muted)} .iconbtn:hover,.ghost:hover{background:var(--accent-soft);color:var(--text)}
+.tabs{display:flex;gap:4px;padding:5px;margin-bottom:12px}.tab{flex:1;background:transparent;color:var(--muted);font-size:13px}.tab.active{background:var(--accent-soft);color:var(--text);font-weight:650}
+.view{padding:16px}.hidden{display:none!important}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sectionhead h2{font-size:15px}
+.task{border:1px solid var(--border);border-radius:13px;padding:13px;margin-bottom:9px;background:var(--panel)}
+.tasktop{display:flex;align-items:center;gap:10px}.emoji{font-size:20px}.taskname{flex:1;font-weight:650;font-size:14px}.time{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted)}
+.bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin:10px 0 11px}.bar>i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px}
+.actions{display:flex;gap:6px;align-items:center}.actions button{font-size:12px}.start{background:var(--accent);color:white;border:0;border-radius:9px;padding:7px 11px}.stop{background:#e8e1db;color:var(--text);border:0;border-radius:9px;padding:7px 11px}
+.small{font-size:12px;color:var(--muted)}
+.row{display:flex;gap:8px;align-items:center}.row>*{min-width:0}
+.add{width:100%;border:1px dashed var(--border);background:transparent;color:var(--muted);padding:11px;border-radius:12px}.add:hover{border-color:var(--accent);color:var(--text)}
+.goal{padding:13px;border:1px solid var(--border);border-radius:13px;margin-bottom:9px}.goaltitle{font-size:14px;font-weight:650}.goalmeta{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:8px}
+.progressline{height:7px;background:var(--border);border-radius:99px;margin-top:8px;overflow:hidden}.progressline i{display:block;height:100%;background:var(--accent)}
+.empty{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+.modalback{position:fixed;inset:0;background:rgba(20,18,16,.35);display:flex;align-items:center;justify-content:center;padding:18px;z-index:5}
+.modal{width:min(500px,100%);padding:18px}.modal h3{font-size:16px;margin-bottom:14px}.field{margin-bottom:11px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}.field input,.field select{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text)}
+.modalactions{display:flex;justify-content:flex-end;gap:7px;margin-top:15px}.primary{background:var(--accent);color:white}.danger{background:#ead5d1;color:#7d3227}
+.settingsgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.setting{padding:14px;border:1px solid var(--border);border-radius:13px}.setting h3{font-size:13px;margin-bottom:10px}.colorrow{display:flex;gap:8px}.colorrow input{height:38px;padding:2px;width:48px}.note{font-size:11px;color:var(--muted);line-height:1.45;margin-top:12px}
+@media(max-width:600px){.app{padding:10px}.settingsgrid{grid-template-columns:1fr} header{padding:14px}.view{padding:12px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="card">
+    <div><h1 id="title">FOCUS LOG</h1><div class="date" id="date"></div></div>
+    <button class="iconbtn" onclick="openSettings()" title="Settings">⚙</button>
+  </header>
+
+  <div class="tabs card">
+    <button class="tab active" data-tab="today">Today</button>
+    <button class="tab" data-tab="progress">Progress</button>
+    <button class="tab" data-tab="goals">Goals</button>
+  </div>
+
+  <section id="today" class="view card"></section>
+  <section id="progress" class="view card hidden"></section>
+  <section id="goals" class="view card hidden"></section>
+</div>
+
+<div id="modal" class="modalback hidden"></div>
+
+<script>
+/*
+  FOCUS LOG — standalone Notion widget
+  Everything is stored in this browser using localStorage.
+  Edit the CONFIG object below for the default appearance/content.
+*/
+const CONFIG = {
+  title: "FOCUS LOG",
+  colors: {
+    bg:"#f6f3ee", panel:"#fffdf9", text:"#292724", muted:"#8b857c",
+    accent:"#b86f58", accentSoft:"#ead8d1", border:"#e3ddd4"
+  },
+  radius: 16,
+  defaultTasks: [
+    {name:"Illustration", emoji:"🎨", goal:120},
+    {name:"Personal Project", emoji:"✏️", goal:60},
+    {name:"Freelance", emoji:"💻", goal:90}
+  ],
+  defaultGoals: [
+    {name:"Creative work", target:600, unit:"minutes"}
+  ]
+};
+
+const KEY="kiki_focus_log_v1";
+let state = JSON.parse(localStorage.getItem(KEY) || "null") || {
+  tasks: CONFIG.defaultTasks.map((x,i)=>({...x,id:crypto.randomUUID?.()||String(Date.now()+i)})),
+  goals: CONFIG.defaultGoals.map((x,i)=>({...x,id:crypto.randomUUID?.()||String(Date.now()+100+i),done:0})),
+  days:{}, active:null, settings:{title:CONFIG.title, ...CONFIG.colors, radius:CONFIG.radius}
+};
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function dayKey(d=new Date()){return d.toISOString().slice(0,10)}
+function today(){return state.days[dayKey()] ||= {}}
+function minsFor(taskId,key=dayKey()){return Number(state.days[key]?.[taskId]||0)}
+function addMins(taskId,mins,key=dayKey()){state.days[key] ||= {};state.days[key][taskId]=(state.days[key][taskId]||0)+mins;save();}
+function totalTask(taskId){return Object.values(state.days).reduce((s,d)=>s+Number(d[taskId]||0),0)}
+function fmt(m){m=Math.max(0,Math.round(m));return `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function applyTheme(){
+ const s=state.settings;
+ document.documentElement.style.setProperty("--bg",s.bg);document.documentElement.style.setProperty("--panel",s.panel);
+ document.documentElement.style.setProperty("--text",s.text);document.documentElement.style.setProperty("--muted",s.muted);
+ document.documentElement.style.setProperty("--accent",s.accent);document.documentElement.style.setProperty("--accent-soft",s.accentSoft);
+ document.documentElement.style.setProperty("--border",s.border);document.documentElement.style.setProperty("--radius",s.radius+"px");
+ document.getElementById("title").textContent=s.title;
+}
+function renderDate(){document.getElementById("date").textContent=new Intl.DateTimeFormat(undefined,{weekday:"long",month:"short",day:"numeric"}).format(new Date())}
+function renderToday(){
+ const el=document.getElementById("today");
+ if(!state.tasks.length){el.innerHTML=`<div class="empty">No focus areas yet.</div><button class="add" onclick="editTask()">＋ Add focus area</button>`;return}
+ el.innerHTML=`<div class="sectionhead"><h2>Today's focus</h2><span class="small">${fmt(Object.values(today()).reduce((a,b)=>a+b,0))}</span></div>`+
+ state.tasks.map(t=>{
+   const m=minsFor(t.id), pct=Math.min(100,m/Math.max(1,t.goal)*100), running=state.active?.id===t.id;
+   return `<div class="task"><div class="tasktop"><span class="emoji">${esc(t.emoji)}</span><span class="taskname">${esc(t.name)}</span><span class="time">${fmt(m)} / ${fmt(t.goal)}</span></div>
+   <div class="bar"><i style="width:${pct}%"></i></div>
+   <div class="actions">${running?`<button class="stop" onclick="stopTimer()">Stop</button>`:`<button class="start" onclick="startTimer('${t.id}')">Start</button>`}
+   <button class="ghost" onclick="quickAdd('${t.id}',15)">+15m</button><button class="ghost" onclick="editTask('${t.id}')">Edit</button><button class="ghost" onclick="deleteTask('${t.id}')">Delete</button></div></div>`
+ }).join("")+`<button class="add" onclick="editTask()">＋ Add focus area</button>`;
+}
+function renderProgress(){
+ const el=document.getElementById("progress"), days=Object.keys(state.days).sort().slice(-7);
+ el.innerHTML=`<div class="sectionhead"><h2>Last 7 days</h2></div>`+
+ (days.length?days.reverse().map(k=>`<div class="goal"><div class="row"><b style="flex:1;font-size:13px">${k}</b><span class="small">${fmt(Object.values(state.days[k]).reduce((a,b)=>a+b,0))}</span></div></div>`).join(""):`<div class="empty">No logged time yet.</div>`);
+}
+function renderGoals(){
+ const el=document.getElementById("goals");
+ el.innerHTML=`<div class="sectionhead"><h2>Goals</h2><button class="ghost" onclick="editGoal()">＋ Add</button></div>`+
+ (state.goals.length?state.goals.map(g=>{
+   const actual=state.tasks.reduce((s,t)=>s+totalTask(t.id),0); // simple global progress
+   const pct=Math.min(100,(g.done||0)/Math.max(1,g.target)*100);
+   return `<div class="goal"><div class="row"><span class="goaltitle" style="flex:1">${esc(g.name)}</span><button class="ghost" onclick="editGoal('${g.id}')">Edit</button><button class="ghost" onclick="deleteGoal('${g.id}')">Delete</button></div>
+   <div class="goalmeta"><span>${g.done||0} / ${g.target} ${esc(g.unit)}</span><span>${Math.round(pct)}%</span></div><div class="progressline"><i style="width:${pct}%"></i></div></div>`
+ }).join(""):`<div class="empty">No goals yet.</div>`);
+}
+function render(){applyTheme();renderDate();renderToday();renderProgress();renderGoals();}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");["today","progress","goals"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==b.dataset.tab));});
+let timer;
+function startTimer(id){if(state.active)stopTimer();state.active={id,started:Date.now()};save();timer=setInterval(tick,1000);renderToday();}
+function tick(){if(!state.active)return;renderToday();}
+function stopTimer(){if(!state.active)return;let elapsed=Math.round((Date.now()-state.active.started)/60000);if(elapsed>0)addMins(state.active.id,elapsed);state.active=null;clearInterval(timer);save();render();}
+function quickAdd(id,m){addMins(id,m);render();}
+function editTask(id){
+ const t=state.tasks.find(x=>x.id===id)||{name:"",emoji:"🎯",goal:60};
+ openModal(`<h3>${id?"Edit":"Add"} focus area</h3>
+ <div class="field"><label>Name</label><input id="f_name" value="${esc(t.name)}"></div>
+ <div class="field"><label>Emoji</label><input id="f_emoji" value="${esc(t.emoji)}"></div>
+ <div class="field"><label>Daily target (minutes)</label><input id="f_goal" type="number" min="1" value="${t.goal}"></div>
+ <div class="modalactions"><button class="ghost" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveTask('${id||""}')">Save</button></div>`);
+}
+function saveTask(id){let x={name:document.getElementById("f_name").value.trim()||"Untitled",emoji:document.getElementById("f_emoji").value||"🎯",goal:Number(document.getElementById("f_goal").value)||60};if(id){Object.assign(state.tasks.find(t=>t.id===id),x)}else state.tasks.push({...x,id:crypto.randomUUID?.()||String(Date.now())});save();closeModal();render();}
+function deleteTask(id){if(confirm("Delete this focus area? Your previously logged time will remain stored.")){state.tasks=state.tasks.filter(t=>t.id!==id);save();render();}}
+function editGoal(id){
+ const g=state.goals.find(x=>x.id===id)||{name:"",target:600,unit:"minutes",done:0};
+ openModal(`<h3>${id?"Edit":"Add"} goal</h3><div class="field"><label>Goal</label><input id="g_name" value="${esc(g.name)}"></div>
+ <div class="field"><label>Target</label><input id="g_target" type="number" min="1" value="${g.target}"></div>
+ <div class="field"><label>Unit</label><input id="g_unit" value="${esc(g.unit)}"></div>
+ <div class="field"><label>Current progress</label><input id="g_done" type="number" min="0" value="${g.done||0}"></div>
+ <div class="modalactions"><button class="ghost" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveGoal('${id||""}')">Save</button></div>`);
+}
+function saveGoal(id){let x={name:document.getElementById("g_name").value.trim()||"Untitled goal",target:Number(document.getElementById("g_target").value)||1,unit:document.getElementById("g_unit").value.trim()||"minutes",done:Number(document.getElementById("g_done").value)||0};if(id)Object.assign(state.goals.find(g=>g.id===id),x);else state.goals.push({...x,id:crypto.randomUUID?.()||String(Date.now())});save();closeModal();render();}
+function deleteGoal(id){if(confirm("Delete this goal?")){state.goals=state.goals.filter(g=>g.id!==id);save();render();}}
+function openSettings(){
+ const s=state.settings;
+ openModal(`<h3>Customize Focus Log</h3><div class="settingsgrid">
+ <div class="setting"><h3>Title</h3><input id="s_title" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text)" value="${esc(s.title)}"></div>
+ <div class="setting"><h3>Corner radius</h3><input id="s_radius" type="range" min="0" max="30" value="${s.radius}" style="width:100%"></div>
+ ${["bg","panel","text","muted","accent","accentSoft","border"].map(k=>`<div class="setting"><h3>${k}</h3><div class="colorrow"><input type="color" id="s_${k}" value="${s[k]}"><input style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text)" value="${s[k]}" onchange="document.getElementById('s_${k}').value=this.value"></div></div>`).join("")}
+ </div><p class="note">Your tasks, goals, logged time and appearance are saved in this browser. This makes the widget personal without requiring a database or login.</p>
+ <div class="modalactions"><button class="ghost" onclick="resetAll()">Reset everything</button><button class="primary" onclick="saveSettings()">Done</button></div>`);
+}
+function saveSettings(){let s=state.settings;s.title=document.getElementById("s_title").value||"FOCUS LOG";s.radius=Number(document.getElementById("s_radius").value);["bg","panel","text","muted","accent","accentSoft","border"].forEach(k=>s[k]=document.getElementById("s_"+k).value);save();closeModal();render();}
+function resetAll(){if(confirm("Reset all tasks, goals, time and settings?")){localStorage.removeItem(KEY);location.reload();}}
+function openModal(content){document.getElementById("modal").innerHTML=`<div class="modal card">${content}</div>`;document.getElementById("modal").classList.remove("hidden")}
+function closeModal(){document.getElementById("modal").classList.add("hidden")}
+render();
+</script>
+</body>
+</html>
