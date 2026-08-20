@@ -1,177 +1,98 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Focus Log</title>
 <style>
-:root{
-  --bg:#f6f3ee; --panel:#fffdf9; --text:#292724; --muted:#8b857c;
-  --accent:#b86f58; --accent-soft:#ead8d1; --border:#e3ddd4;
-  --radius:16px; --shadow:0 8px 30px rgba(40,35,30,.06);
-  --font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font)}
-button,input{font:inherit} button{cursor:pointer}
-.app{max-width:900px;margin:auto;padding:20px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;margin-bottom:12px}
-h1,h2,h3,p{margin:0} h1{font-size:19px;letter-spacing:.02em}.date{font-size:12px;color:var(--muted);margin-top:3px}
-.iconbtn,.tab,.primary,.danger,.ghost{border:0;border-radius:10px;padding:9px 12px}
-.iconbtn,.ghost{background:transparent;color:var(--muted)} .iconbtn:hover,.ghost:hover{background:var(--accent-soft);color:var(--text)}
-.tabs{display:flex;gap:4px;padding:5px;margin-bottom:12px}.tab{flex:1;background:transparent;color:var(--muted);font-size:13px}.tab.active{background:var(--accent-soft);color:var(--text);font-weight:650}
-.view{padding:16px}.hidden{display:none!important}
-.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sectionhead h2{font-size:15px}
-.task{border:1px solid var(--border);border-radius:13px;padding:13px;margin-bottom:9px;background:var(--panel)}
-.tasktop{display:flex;align-items:center;gap:10px}.emoji{font-size:20px}.taskname{flex:1;font-weight:650;font-size:14px}.time{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted)}
-.bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin:10px 0 11px}.bar>i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px}
-.actions{display:flex;gap:6px;align-items:center}.actions button{font-size:12px}.start{background:var(--accent);color:white;border:0;border-radius:9px;padding:7px 11px}.stop{background:#e8e1db;color:var(--text);border:0;border-radius:9px;padding:7px 11px}
-.small{font-size:12px;color:var(--muted)}
-.row{display:flex;gap:8px;align-items:center}.row>*{min-width:0}
-.add{width:100%;border:1px dashed var(--border);background:transparent;color:var(--muted);padding:11px;border-radius:12px}.add:hover{border-color:var(--accent);color:var(--text)}
-.goal{padding:13px;border:1px solid var(--border);border-radius:13px;margin-bottom:9px}.goaltitle{font-size:14px;font-weight:650}.goalmeta{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:8px}
-.progressline{height:7px;background:var(--border);border-radius:99px;margin-top:8px;overflow:hidden}.progressline i{display:block;height:100%;background:var(--accent)}
-.empty{text-align:center;padding:30px;color:var(--muted);font-size:13px}
-.modalback{position:fixed;inset:0;background:rgba(20,18,16,.35);display:flex;align-items:center;justify-content:center;padding:18px;z-index:5}
-.modal{width:min(500px,100%);padding:18px}.modal h3{font-size:16px;margin-bottom:14px}.field{margin-bottom:11px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}.field input,.field select{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text)}
-.modalactions{display:flex;justify-content:flex-end;gap:7px;margin-top:15px}.primary{background:var(--accent);color:white}.danger{background:#ead5d1;color:#7d3227}
-.settingsgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.setting{padding:14px;border:1px solid var(--border);border-radius:13px}.setting h3{font-size:13px;margin-bottom:10px}.colorrow{display:flex;gap:8px}.colorrow input{height:38px;padding:2px;width:48px}.note{font-size:11px;color:var(--muted);line-height:1.45;margin-top:12px}
-@media(max-width:600px){.app{padding:10px}.settingsgrid{grid-template-columns:1fr} header{padding:14px}.view{padding:12px}}
+:root{--bg:#f5f1eb;--panel:#fffdf9;--text:#282522;--muted:#898178;--accent:#b96f58;--soft:#ead8d1;--border:#e2dbd2;--r:16px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px "SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}.app{max-width:900px;margin:auto;padding:12px}.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 5px 20px #00000009}
+header{display:flex;justify-content:space-between;align-items:center;padding:17px;margin-bottom:10px}h1,h2,h3,p{margin:0}h1{font-size:18px}.date,.small{font-size:11px;color:var(--muted)}button,input,select{font:inherit}button{cursor:pointer}.gear{border:1px solid var(--border);background:var(--panel);border-radius:9px;padding:8px;color:var(--muted)}
+.tabs{display:flex;padding:5px;gap:4px;margin-bottom:10px}.tab{flex:1;border:0;background:none;color:var(--muted);padding:9px;border-radius:9px;font-size:12px}.tab.active{background:var(--soft);color:var(--text);font-weight:700}.view{padding:16px}.hidden{display:none}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}.task,.goal,.stat{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}.tasktop{display:flex;gap:9px;align-items:center}.emoji{font-size:19px}.name{font-weight:700;flex:1}.time{font-size:11px;color:var(--muted)}.bar,.goalbar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin:9px 0}.bar i,.goalbar i{display:block;height:100%;background:var(--accent)}.actions{display:flex;gap:2px;flex-wrap:wrap}.actions button,.link{border:0;background:none;color:var(--muted);font-size:11px;padding:5px 7px;border-radius:7px}.actions button:hover,.link:hover{background:var(--soft);color:var(--text)}.start{background:var(--accent)!important;color:white!important}.stop{background:#e8e1db!important;color:var(--text)!important}.add{width:100%;border:1px dashed var(--border);background:none;color:var(--muted);border-radius:10px;padding:10px}.empty{text-align:center;color:var(--muted);padding:25px;font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat b{display:block;font-size:17px}.stat span{font-size:9px;color:var(--muted)}
+.chart{height:150px;display:flex;gap:8px;align-items:end;border-bottom:1px solid var(--border);padding:8px 2px}.day{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:4px}.daybar{width:min(30px,65%);background:var(--accent);border-radius:5px 5px 1px 1px;min-height:2px}.goaltop{display:flex;gap:7px;align-items:center}.goalname{font-weight:700;flex:1}.goalmeta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}.tag{font-size:9px;background:var(--soft);padding:4px 6px;border-radius:99px}
+.modalbg{position:fixed;inset:0;background:#0006;display:flex;align-items:center;justify-content:center;padding:12px;z-index:10}.modal{width:min(520px,100%);max-height:90vh;overflow:auto;padding:18px}.modal h3{margin-bottom:14px}.field{margin-bottom:10px}.field label{display:block;font-size:10px;color:var(--muted);margin-bottom:5px}.field input,.field select{width:100%;padding:9px;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text)}.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}.buttons{display:flex;justify-content:flex-end;gap:7px;margin-top:14px}.primary,.secondary,.danger{border:0;border-radius:8px;padding:8px 12px}.primary{background:var(--accent);color:white}.secondary{background:var(--panel);border:1px solid var(--border)}.danger{background:#efd7d2;color:#8b3429}.checks{border:1px solid var(--border);border-radius:8px;padding:7px;max-height:130px;overflow:auto}.check{display:block;padding:5px;font-size:11px}.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:9px}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:span 2}.two{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="app">
-  <header class="card">
-    <div><h1 id="title">FOCUS LOG</h1><div class="date" id="date"></div></div>
-    <button class="iconbtn" onclick="openSettings()" title="Settings">⚙</button>
-  </header>
-
-  <div class="tabs card">
-    <button class="tab active" data-tab="today">Today</button>
-    <button class="tab" data-tab="progress">Progress</button>
-    <button class="tab" data-tab="goals">Goals</button>
-  </div>
-
-  <section id="today" class="view card"></section>
-  <section id="progress" class="view card hidden"></section>
-  <section id="goals" class="view card hidden"></section>
-</div>
-
-<div id="modal" class="modalback hidden"></div>
-
+<header class="card"><div><h1 id="title"></h1><div class="date" id="date"></div></div><button class="gear" onclick="settings()">⚙</button></header>
+<nav class="tabs card"><button class="tab active" onclick="tab('today',this)">Today</button><button class="tab" onclick="tab('progress',this)">Progress</button><button class="tab" onclick="tab('goals',this)">Goals</button></nav>
+<section id="today" class="card view"></section><section id="progress" class="card view hidden"></section><section id="goals" class="card view hidden"></section>
+</div><div id="modal"></div>
 <script>
-/*
-  FOCUS LOG — standalone Notion widget
-  Everything is stored in this browser using localStorage.
-  Edit the CONFIG object below for the default appearance/content.
-*/
-const CONFIG = {
-  title: "FOCUS LOG",
-  colors: {
-    bg:"#f6f3ee", panel:"#fffdf9", text:"#292724", muted:"#8b857c",
-    accent:"#b86f58", accentSoft:"#ead8d1", border:"#e3ddd4"
-  },
-  radius: 16,
-  defaultTasks: [
-    {name:"Illustration", emoji:"🎨", goal:120},
-    {name:"Personal Project", emoji:"✏️", goal:60},
-    {name:"Freelance", emoji:"💻", goal:90}
-  ],
-  defaultGoals: [
-    {name:"Creative work", target:600, unit:"minutes"}
-  ]
-};
-
-const KEY="kiki_focus_log_v1";
-let state = JSON.parse(localStorage.getItem(KEY) || "null") || {
-  tasks: CONFIG.defaultTasks.map((x,i)=>({...x,id:crypto.randomUUID?.()||String(Date.now()+i)})),
-  goals: CONFIG.defaultGoals.map((x,i)=>({...x,id:crypto.randomUUID?.()||String(Date.now()+100+i),done:0})),
-  days:{}, active:null, settings:{title:CONFIG.title, ...CONFIG.colors, radius:CONFIG.radius}
-};
-function save(){localStorage.setItem(KEY,JSON.stringify(state));}
-function dayKey(d=new Date()){return d.toISOString().slice(0,10)}
-function today(){return state.days[dayKey()] ||= {}}
-function minsFor(taskId,key=dayKey()){return Number(state.days[key]?.[taskId]||0)}
-function addMins(taskId,mins,key=dayKey()){state.days[key] ||= {};state.days[key][taskId]=(state.days[key][taskId]||0)+mins;save();}
-function totalTask(taskId){return Object.values(state.days).reduce((s,d)=>s+Number(d[taskId]||0),0)}
-function fmt(m){m=Math.max(0,Math.round(m));return `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-function applyTheme(){
- const s=state.settings;
- document.documentElement.style.setProperty("--bg",s.bg);document.documentElement.style.setProperty("--panel",s.panel);
- document.documentElement.style.setProperty("--text",s.text);document.documentElement.style.setProperty("--muted",s.muted);
- document.documentElement.style.setProperty("--accent",s.accent);document.documentElement.style.setProperty("--accent-soft",s.accentSoft);
- document.documentElement.style.setProperty("--border",s.border);document.documentElement.style.setProperty("--radius",s.radius+"px");
- document.getElementById("title").textContent=s.title;
+const DEF={title:"FOCUS LOG",theme:{bg:"#f5f1eb",panel:"#fffdf9",text:"#282522",muted:"#898178",accent:"#b96f58",soft:"#ead8d1",border:"#e2dbd2",r:16},tasks:[["Illustration","🎨",120],["Personal Project","✏️",60],["Freelance","💻",90]]};
+const uid=()=>crypto.randomUUID?.()||Date.now()+Math.random(), key=d=>{d=new Date(d);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const today=()=>key(new Date()), esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function fresh(){let s={title:DEF.title,theme:{...DEF.theme},tasks:[],goals:[],logs:{},active:null};s.tasks=DEF.tasks.map(x=>({id:uid(),name:x[0],emoji:x[1],daily:x[2]}));s.goals=[];return s}
+let S=(()=>{try{return JSON.parse(localStorage.getItem("focuslog_v3"))||fresh()}catch{return fresh()}})();
+S.theme={...DEF.theme,...(S.theme||{})};S.tasks=S.tasks||[];S.goals=S.goals||[];S.logs=S.logs||{};
+const save=()=>localStorage.setItem("focuslog_v3",JSON.stringify(S));
+const mins=(id,k=today())=>+(S.logs[k]?.[id]||0);
+const add=(id,n,k=today())=>{S.logs[k]??={};S.logs[k][id]=(S.logs[k][id]||0)+n;save()};
+const total=k=>Object.values(S.logs[k]||{}).reduce((a,b)=>a+ +b,0);
+const fmt=n=>`${Math.floor(n/60)}h ${String(Math.round(n%60)).padStart(2,"0")}m`;
+function week(){let d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return Array.from({length:7},(_,i)=>{let x=new Date(d);x.setDate(d.getDate()+i);return key(x)})}
+function render(){
+let t=S.theme;for(let [k,v] of Object.entries(t))document.documentElement.style.setProperty("--"+k,k=="r"?v+"px":v);
+document.getElementById("title").textContent=S.title;document.getElementById("date").textContent=new Intl.DateTimeFormat(undefined,{weekday:"long",month:"short",day:"numeric"}).format(new Date());
+todayView();progress();goals();
 }
-function renderDate(){document.getElementById("date").textContent=new Intl.DateTimeFormat(undefined,{weekday:"long",month:"short",day:"numeric"}).format(new Date())}
-function renderToday(){
- const el=document.getElementById("today");
- if(!state.tasks.length){el.innerHTML=`<div class="empty">No focus areas yet.</div><button class="add" onclick="editTask()">＋ Add focus area</button>`;return}
- el.innerHTML=`<div class="sectionhead"><h2>Today's focus</h2><span class="small">${fmt(Object.values(today()).reduce((a,b)=>a+b,0))}</span></div>`+
- state.tasks.map(t=>{
-   const m=minsFor(t.id), pct=Math.min(100,m/Math.max(1,t.goal)*100), running=state.active?.id===t.id;
-   return `<div class="task"><div class="tasktop"><span class="emoji">${esc(t.emoji)}</span><span class="taskname">${esc(t.name)}</span><span class="time">${fmt(m)} / ${fmt(t.goal)}</span></div>
-   <div class="bar"><i style="width:${pct}%"></i></div>
-   <div class="actions">${running?`<button class="stop" onclick="stopTimer()">Stop</button>`:`<button class="start" onclick="startTimer('${t.id}')">Start</button>`}
-   <button class="ghost" onclick="quickAdd('${t.id}',15)">+15m</button><button class="ghost" onclick="editTask('${t.id}')">Edit</button><button class="ghost" onclick="deleteTask('${t.id}')">Delete</button></div></div>`
- }).join("")+`<button class="add" onclick="editTask()">＋ Add focus area</button>`;
+function todayView(){
+let k=today(), live=S.active?.taskId?((Date.now()-S.active.started)/60000):0;
+let html=`<div class="head"><h2>Today's focus</h2><span class="small">${fmt(total(k)+live)}</span></div>`;
+if(!S.tasks.length)html+=`<div class="empty">No focus areas yet.</div>`;
+S.tasks.forEach(t=>{let m=mins(t.id,k)+(S.active?.taskId==t.id?live:0),p=Math.min(100,m/Math.max(1,t.daily)*100),run=S.active?.taskId==t.id;
+html+=`<article class="task"><div class="tasktop"><span class="emoji">${esc(t.emoji)}</span><span class="name">${esc(t.name)}</span><span class="time">${fmt(m)} / ${fmt(t.daily)}</span></div><div class="bar"><i style="width:${p}%"></i></div><div class="actions">${run?`<button class="stop" onclick="stop()">Stop</button>`:`<button class="start" onclick="start('${t.id}')">Start</button>`}<button onclick="manual('${t.id}')">+ time</button><button onclick="editTask('${t.id}')">Edit</button><button onclick="delTask('${t.id}')">Delete</button></div></article>`});
+html+=`<button class="add" onclick="editTask()">＋ Add focus area</button>`;document.getElementById("today").innerHTML=html;
 }
-function renderProgress(){
- const el=document.getElementById("progress"), days=Object.keys(state.days).sort().slice(-7);
- el.innerHTML=`<div class="sectionhead"><h2>Last 7 days</h2></div>`+
- (days.length?days.reverse().map(k=>`<div class="goal"><div class="row"><b style="flex:1;font-size:13px">${k}</b><span class="small">${fmt(Object.values(state.days[k]).reduce((a,b)=>a+b,0))}</span></div></div>`).join(""):`<div class="empty">No logged time yet.</div>`);
+function progress(){
+let ks=week(),vs=ks.map(total),sum=vs.reduce((a,b)=>a+b,0),mx=Math.max(...vs,1);
+let html=`<div class="head"><h2>This week</h2><span class="small">${fmt(sum)}</span></div><div class="stats"><div class="stat"><b>${fmt(sum)}</b><span>TOTAL</span></div><div class="stat"><b>${fmt(sum/7)}</b><span>AVERAGE</span></div><div class="stat"><b>${fmt(Math.max(...vs))}</b><span>BEST DAY</span></div></div><div class="chart">`;
+ks.forEach((k,i)=>html+=`<div class="day"><span class="small">${vs[i]?fmt(vs[i]):""}</span><i class="daybar" style="height:${Math.max(2,vs[i]/mx*100)}%"></i><span class="small">${new Intl.DateTimeFormat(undefined,{weekday:"short"}).format(new Date(k+"T12:00:00")).slice(0,2)}</span></div>`);
+html+=`</div><div class="head" style="margin-top:14px"><h2>By focus area</h2></div>`;
+S.tasks.slice().sort((a,b)=>ks.reduce((n,k)=>n+mins(b.id,k),0)-ks.reduce((n,k)=>n+mins(a.id,k),0)).forEach(t=>html+=`<div class="stat" style="margin-bottom:7px"><span>${esc(t.emoji)} ${esc(t.name)}</span><b>${fmt(ks.reduce((n,k)=>n+mins(t.id,k),0))}</b></div>`);
+document.getElementById("progress").innerHTML=html;
 }
-function renderGoals(){
- const el=document.getElementById("goals");
- el.innerHTML=`<div class="sectionhead"><h2>Goals</h2><button class="ghost" onclick="editGoal()">＋ Add</button></div>`+
- (state.goals.length?state.goals.map(g=>{
-   const actual=state.tasks.reduce((s,t)=>s+totalTask(t.id),0); // simple global progress
-   const pct=Math.min(100,(g.done||0)/Math.max(1,g.target)*100);
-   return `<div class="goal"><div class="row"><span class="goaltitle" style="flex:1">${esc(g.name)}</span><button class="ghost" onclick="editGoal('${g.id}')">Edit</button><button class="ghost" onclick="deleteGoal('${g.id}')">Delete</button></div>
-   <div class="goalmeta"><span>${g.done||0} / ${g.target} ${esc(g.unit)}</span><span>${Math.round(pct)}%</span></div><div class="progressline"><i style="width:${pct}%"></i></div></div>`
- }).join(""):`<div class="empty">No goals yet.</div>`);
+function goals(){
+let html=`<div class="head"><h2>Goals</h2><button class="link" onclick="editGoal()">＋ Add goal</button></div>`;
+if(!S.goals.length)html+=`<div class="empty">No goals yet. Add one and link it to your focus areas.</div>`;
+S.goals.forEach(g=>{
+let ks=g.period=="day"? [today()]:g.period=="all"?Object.keys(S.logs):week();
+let ts=g.taskIds?.length?S.tasks.filter(t=>g.taskIds.includes(t.id)):S.tasks;
+let done=ks.reduce((n,k)=>n+ts.reduce((a,t)=>a+mins(t.id,k),0),0),p=Math.min(100,done/Math.max(1,g.target)*100);
+html+=`<article class="goal"><div class="goaltop"><span class="goalname">${esc(g.name)}</span><span class="small">${Math.round(p)}%</span><button class="link" onclick="editGoal('${g.id}')">Edit</button><button class="link" onclick="delGoal('${g.id}')">Delete</button></div><div class="goalmeta"><span>${fmt(done)} / ${g.target} ${esc(g.unit)}</span><span>${g.period=="all"?"all time":"this "+g.period}</span></div><div class="goalbar"><i style="width:${p}%"></i></div><div class="tags">${ts.length?ts.map(t=>`<span class="tag">${esc(t.emoji)} ${esc(t.name)}</span>`).join(""):`<span class="tag">All focus areas</span>`}</div></article>`});
+document.getElementById("goals").innerHTML=html;
 }
-function render(){applyTheme();renderDate();renderToday();renderProgress();renderGoals();}
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");["today","progress","goals"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==b.dataset.tab));});
-let timer;
-function startTimer(id){if(state.active)stopTimer();state.active={id,started:Date.now()};save();timer=setInterval(tick,1000);renderToday();}
-function tick(){if(!state.active)return;renderToday();}
-function stopTimer(){if(!state.active)return;let elapsed=Math.round((Date.now()-state.active.started)/60000);if(elapsed>0)addMins(state.active.id,elapsed);state.active=null;clearInterval(timer);save();render();}
-function quickAdd(id,m){addMins(id,m);render();}
+function tab(id,b){document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");["today","progress","goals"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!=id));}
+let interval;
+function start(id){if(S.active)stop();S.active={taskId:id,started:Date.now()};save();clearInterval(interval);interval=setInterval(todayView,1000);todayView()}
+function stop(){if(!S.active)return;let n=(Date.now()-S.active.started)/60000;if(n>.1)add(S.active.taskId,n);S.active=null;clearInterval(interval);save();render()}
+function modal(x){document.getElementById("modal").innerHTML=`<div class="modalbg" onclick="if(event.target===this)close()"><div class="modal card">${x}</div></div>`}
+function close(){document.getElementById("modal").innerHTML=""}
+function manual(id){modal(`<h3>Add time</h3><div class="field"><label>Minutes</label><input id="n" type="number" min="1" value="15"></div><div class="buttons"><button class="secondary" onclick="close()">Cancel</button><button class="primary" onclick="add(${JSON.stringify(id)},+n.value);close();render()">Add</button></div>`)}
 function editTask(id){
- const t=state.tasks.find(x=>x.id===id)||{name:"",emoji:"🎯",goal:60};
- openModal(`<h3>${id?"Edit":"Add"} focus area</h3>
- <div class="field"><label>Name</label><input id="f_name" value="${esc(t.name)}"></div>
- <div class="field"><label>Emoji</label><input id="f_emoji" value="${esc(t.emoji)}"></div>
- <div class="field"><label>Daily target (minutes)</label><input id="f_goal" type="number" min="1" value="${t.goal}"></div>
- <div class="modalactions"><button class="ghost" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveTask('${id||""}')">Save</button></div>`);
+let t=S.tasks.find(x=>x.id==id)||{name:"",emoji:"🎯",daily:60};
+modal(`<h3>${id?"Edit":"Add"} focus area</h3><div class="two"><div class="field"><label>Name</label><input id="tn" value="${esc(t.name)}"></div><div class="field"><label>Emoji</label><input id="te" value="${esc(t.emoji)}"></div></div><div class="field"><label>Daily target (minutes)</label><input id="td" type="number" min="1" value="${t.daily}"></div><div class="buttons"><button class="secondary" onclick="close()">Cancel</button><button class="primary" onclick="saveTask('${id||""}')">Save</button></div>`)
 }
-function saveTask(id){let x={name:document.getElementById("f_name").value.trim()||"Untitled",emoji:document.getElementById("f_emoji").value||"🎯",goal:Number(document.getElementById("f_goal").value)||60};if(id){Object.assign(state.tasks.find(t=>t.id===id),x)}else state.tasks.push({...x,id:crypto.randomUUID?.()||String(Date.now())});save();closeModal();render();}
-function deleteTask(id){if(confirm("Delete this focus area? Your previously logged time will remain stored.")){state.tasks=state.tasks.filter(t=>t.id!==id);save();render();}}
+function saveTask(id){let x={name:tn.value.trim()||"Untitled",emoji:te.value.trim()||"🎯",daily:Math.max(1,+td.value||60)};if(id)Object.assign(S.tasks.find(t=>t.id==id),x);else S.tasks.push({...x,id:uid()});save();close();render()}
+function delTask(id){if(S.active?.taskId==id)stop();if(confirm("Delete this focus area? Existing time stays saved.")){S.tasks=S.tasks.filter(t=>t.id!=id);S.goals.forEach(g=>g.taskIds=(g.taskIds||[]).filter(x=>x!=id));save();render()}}
 function editGoal(id){
- const g=state.goals.find(x=>x.id===id)||{name:"",target:600,unit:"minutes",done:0};
- openModal(`<h3>${id?"Edit":"Add"} goal</h3><div class="field"><label>Goal</label><input id="g_name" value="${esc(g.name)}"></div>
- <div class="field"><label>Target</label><input id="g_target" type="number" min="1" value="${g.target}"></div>
- <div class="field"><label>Unit</label><input id="g_unit" value="${esc(g.unit)}"></div>
- <div class="field"><label>Current progress</label><input id="g_done" type="number" min="0" value="${g.done||0}"></div>
- <div class="modalactions"><button class="ghost" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveGoal('${id||""}')">Save</button></div>`);
+let g=S.goals.find(x=>x.id==id)||{name:"",target:300,unit:"min",period:"week",taskIds:[]};
+let checks=S.tasks.map(t=>`<label class="check"><input type="checkbox" name="gt" value="${t.id}" ${(g.taskIds||[]).includes(t.id)?"checked":""}> ${esc(t.emoji)} ${esc(t.name)}</label>`).join("");
+modal(`<h3>${id?"Edit":"Add"} goal</h3><div class="field"><label>Name</label><input id="gn" value="${esc(g.name)}"></div><div class="two"><div class="field"><label>Target</label><input id="gnum" type="number" min="1" value="${g.target}"></div><div class="field"><label>Unit</label><input id="gu" value="${esc(g.unit||"min")}"></div></div><div class="field"><label>Period</label><select id="gp"><option value="day" ${g.period=="day"?"selected":""}>Today</option><option value="week" ${g.period=="week"?"selected":""}>This week</option><option value="all" ${g.period=="all"?"selected":""}>All time</option></select></div><div class="field"><label>Count time from</label><div class="checks">${checks||'<span class="small">No focus areas yet.</span>'}</div><div class="note">Leave all unchecked to count every focus area.</div></div><div class="buttons"><button class="secondary" onclick="close()">Cancel</button><button class="primary" onclick="saveGoal('${id||""}')">Save</button></div>`)
 }
-function saveGoal(id){let x={name:document.getElementById("g_name").value.trim()||"Untitled goal",target:Number(document.getElementById("g_target").value)||1,unit:document.getElementById("g_unit").value.trim()||"minutes",done:Number(document.getElementById("g_done").value)||0};if(id)Object.assign(state.goals.find(g=>g.id===id),x);else state.goals.push({...x,id:crypto.randomUUID?.()||String(Date.now())});save();closeModal();render();}
-function deleteGoal(id){if(confirm("Delete this goal?")){state.goals=state.goals.filter(g=>g.id!==id);save();render();}}
-function openSettings(){
- const s=state.settings;
- openModal(`<h3>Customize Focus Log</h3><div class="settingsgrid">
- <div class="setting"><h3>Title</h3><input id="s_title" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text)" value="${esc(s.title)}"></div>
- <div class="setting"><h3>Corner radius</h3><input id="s_radius" type="range" min="0" max="30" value="${s.radius}" style="width:100%"></div>
- ${["bg","panel","text","muted","accent","accentSoft","border"].map(k=>`<div class="setting"><h3>${k}</h3><div class="colorrow"><input type="color" id="s_${k}" value="${s[k]}"><input style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text)" value="${s[k]}" onchange="document.getElementById('s_${k}').value=this.value"></div></div>`).join("")}
- </div><p class="note">Your tasks, goals, logged time and appearance are saved in this browser. This makes the widget personal without requiring a database or login.</p>
- <div class="modalactions"><button class="ghost" onclick="resetAll()">Reset everything</button><button class="primary" onclick="saveSettings()">Done</button></div>`);
+function saveGoal(id){let x={name:gn.value.trim()||"Untitled goal",target:Math.max(1,+gnum.value||1),unit:gu.value.trim()||"min",period:gp.value,taskIds:[...document.querySelectorAll('input[name=gt]:checked')].map(x=>x.value)};if(id)Object.assign(S.goals.find(g=>g.id==id),x);else S.goals.push({...x,id:uid()});save();close();render()}
+function delGoal(id){if(confirm("Delete this goal?")){S.goals=S.goals.filter(g=>g.id!=id);save();render()}}
+function settings(){
+let ks=["bg","panel","text","muted","accent","soft","border"];
+modal(`<h3>Customize widget</h3><div class="field"><label>Title</label><input id="st" value="${esc(S.title)}"></div>${ks.map(k=>`<div class="field"><label>${k}</label><input id="c_${k}" type="color" value="${S.theme[k]}" style="width:50px;height:34px;padding:2px"><input id="x_${k}" value="${S.theme[k]}" style="width:calc(100% - 58px);margin-left:6px;padding:8px;border:1px solid var(--border);border-radius:8px" oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value))document.getElementById('c_${k}').value=this.value"></div>`).join("")}<div class="field"><label>Corner radius</label><input id="sr" type="range" min="0" max="30" value="${S.theme.r}" style="width:100%"></div><div class="buttons"><button class="danger" onclick="resetAll()">Reset everything</button><button class="primary" onclick="saveSettings()">Done</button></div><div class="note">Tasks, goals and logged time are edited directly in the widget and saved automatically in this browser.</div>`)
 }
-function saveSettings(){let s=state.settings;s.title=document.getElementById("s_title").value||"FOCUS LOG";s.radius=Number(document.getElementById("s_radius").value);["bg","panel","text","muted","accent","accentSoft","border"].forEach(k=>s[k]=document.getElementById("s_"+k).value);save();closeModal();render();}
-function resetAll(){if(confirm("Reset all tasks, goals, time and settings?")){localStorage.removeItem(KEY);location.reload();}}
-function openModal(content){document.getElementById("modal").innerHTML=`<div class="modal card">${content}</div>`;document.getElementById("modal").classList.remove("hidden")}
-function closeModal(){document.getElementById("modal").classList.add("hidden")}
+function saveSettings(){S.title=st.value.trim()||"FOCUS LOG";["bg","panel","text","muted","accent","soft","border"].forEach(k=>S.theme[k]=document.getElementById("c_"+k).value);S.theme.r=+sr.value;save();close();render()}
+function resetAll(){if(confirm("Delete all tasks, goals, time and settings?")){localStorage.removeItem("focuslog_v3");location.reload()}}
+window.addEventListener("beforeunload",()=>{if(S.active){let n=(Date.now()-S.active.started)/60000;if(n>.1)add(S.active.taskId,n);S.active=null;save()}});
 render();
 </script>
 </body>
